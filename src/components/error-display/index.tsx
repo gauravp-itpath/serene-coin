@@ -8,7 +8,7 @@ interface ErrorDisplayProps {
 export function ErrorDisplay({ message, onRetry }: ErrorDisplayProps) {
   return (
     <div
-      className="flex flex-col items-center justify-center p-8 space-y-6 m-4 bg-slate-600  rounded-lg
+      className="flex flex-col items-center justify-center p-8 space-y-6 m-4 bg-slate-700  rounded-lg
  max-w-md mx-auto"
     >
       <div className="flex flex-col items-center space-y-4">

@@ -13,14 +13,14 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
 import { useState } from "react";
+import PaginationControls from "../pagination";
 
 export function CryptoTable({ data }: CryptoTableProps) {
+  console.log(data[0], "data");
   const [sortBy, setSortBy] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +31,7 @@ export function CryptoTable({ data }: CryptoTableProps) {
   >("all");
   // Add pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
 
   const columns: Column[] = [
     { label: "Price", field: "price", sortable: true },
@@ -64,12 +64,16 @@ export function CryptoTable({ data }: CryptoTableProps) {
   const filterByMarketCap = (coin: CryptoData) => {
     switch (marketCapFilter) {
       case "high":
-        return coin.market_cap >= 10000000000; // $10B+
+        // Market cap greater than or equal to $100 billion
+        return coin.market_cap >= 100000000000;
       case "medium":
-        return coin.market_cap >= 1000000000 && coin.market_cap < 10000000000; // $1B-$10B
+        // Market cap between $10 billion to $100bilion
+        return coin.market_cap >= 10000000000 && coin.market_cap < 100000000000;
       case "low":
-        return coin.market_cap < 1000000000; // <$1B
+        // Market cap less than $10 billion
+        return coin.market_cap < 10000000000;
       default:
+        // No filter applied
         return true;
     }
   };
@@ -120,7 +124,7 @@ export function CryptoTable({ data }: CryptoTableProps) {
   return (
     <div className="space-y-4 ">
       {/* Search and Filter Controls */}
-      <div className="bg-slate-600 rounded-lg p-4 space-y-4">
+      <div className="bg-slate-700 rounded-lg p-3 space-y-3">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
             <input
@@ -128,11 +132,11 @@ export function CryptoTable({ data }: CryptoTableProps) {
               placeholder="Search by name or symbol..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-700 rounded-lg px-4 py-2 pl-10 text-gray-200 
-                       placeholder-gray-400 focus:ring-2 focus:ring-zinc-500 outline-none"
+              className="w-full bg-gray-400 rounded-lg px-4 py-2 pl-10 text-gray-800 
+                       placeholder-gray-700 focus:ring-2 focus:ring-zinc-600 outline-none"
             />
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700"
               size={18}
             />
           </div>
@@ -141,8 +145,8 @@ export function CryptoTable({ data }: CryptoTableProps) {
             className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors
                      ${
                        showFilters
-                         ? "bg-zinc-500 text-white"
-                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                         ? "bg-zinc-500 text-[#787765]"
+                         : "bg-gray-400 text-gray-700 "
                      }`}
           >
             <SlidersHorizontal size={18} />
@@ -184,9 +188,9 @@ export function CryptoTable({ data }: CryptoTableProps) {
                 className="w-full bg-gray-700 rounded-lg px-3 py-2 text-gray-200"
               >
                 <option value="all">All</option>
-                <option value="high">High ($10B+)</option>
-                <option value="medium">Medium ($1B-$10B)</option>
-                <option value="low">Low ($1B)</option>
+                <option value="high">High ($100 B+)</option>
+                <option value="medium">Medium ($10B-$100B)</option>
+                <option value="low">Low ($10B)</option>
               </select>
             </div>
           </div>
@@ -194,33 +198,33 @@ export function CryptoTable({ data }: CryptoTableProps) {
       </div>
 
       {/* Table */}
-      <div className="bg-slate-600 rounded-lg overflow-hidden">
+      <div className="bg-slate-700 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-slate-600/50">
-                <th className="p-4 text-left text-gray-400 font-medium">
+              <tr className="bg-slate-700/50 h-[40px]">
+                <th className="p-4 text-left text-orange-200  font-medium w-20">
                   Rank
                 </th>
-                <th className="p-4 text-left text-gray-400 font-medium">
+                <th className="p-4 text-left text-orange-200  font-medium w-[200px] text-pretty">
                   Asset
                 </th>
                 {columns.map((column) => (
                   <th
                     key={column.field}
-                    className="p-4 text-right text-gray-400 font-medium cursor-pointer 
-                             hover:text-white transition-colors"
+                    className="p-4 text-right text-orange-200  font-medium cursor-pointer 
+                    transition-colors w-[150px] relative"
                     onClick={() => column.sortable && handleSort(column.field)}
                   >
-                    <div className="flex items-center justify-end gap-2">
-                      {column.label}
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="hover:text-orange-400 ">{column.label}</p>
                       {column.sortable && (
-                        <span className="text-gray-500">
+                        <span className="  text-gray-200">
                           {sortBy === column.field ? (
                             sortDirection === "asc" ? (
-                              <ArrowUp size={16} className="text-zinc-500" />
+                              <ArrowUp size={16} className="text-gray-300" />
                             ) : (
-                              <ArrowDown size={16} className="text-zinc-500" />
+                              <ArrowDown size={16} className="text-gray-300" />
                             )
                           ) : (
                             <ArrowUpDown size={16} />
@@ -236,12 +240,12 @@ export function CryptoTable({ data }: CryptoTableProps) {
               {currentData.map((coin, index) => (
                 <tr
                   key={coin.id}
-                  className="hover:bg-gray-700/30 transition-colors duration-200"
+                  className="hover:bg-gray-500/70 transition-colors duration-200 h-[50px]"
                 >
-                  <td className="p-4 text-gray-300">
+                  <td className="p-4 text-orange-200 font-medium">
                     {startIndex + index + 1}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 w-[200px]">
                     <div className="flex items-center gap-3">
                       <img
                         src={coin.image}
@@ -249,16 +253,16 @@ export function CryptoTable({ data }: CryptoTableProps) {
                         className="w-8 h-8 rounded-full"
                       />
                       <div>
-                        <div className="font-medium text-gray-200">
+                        <div className="font-medium text-yellow-100">
                           {coin.name}
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-lime-300">
                           {coin.symbol.toUpperCase()}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 text-right font-medium text-gray-200">
+                  <td className="p-4 text-right font-medium text-yellow-100">
                     {formatCurrency(coin.current_price)}
                   </td>
                   <td className="p-4 text-right">
@@ -277,16 +281,16 @@ export function CryptoTable({ data }: CryptoTableProps) {
                       {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
                     </div>
                   </td>
-                  <td className="p-4 text-right text-gray-200">
+                  <td className="p-4 text-right text-yellow-100">
                     {formatCurrency(coin.high_24h)}
                   </td>
-                  <td className="p-4 text-right text-gray-200">
+                  <td className="p-4 text-right text-yellow-100">
                     {formatCurrency(coin.low_24h)}
                   </td>
-                  <td className="p-4 text-right text-gray-200">
+                  <td className="p-4 text-right text-yellow-100">
                     {formatLargeNumber(coin.market_cap)}
                   </td>
-                  <td className="p-4 text-right text-gray-200">
+                  <td className="p-4 text-right text-yellow-100">
                     {formatVolumeNumber(coin.total_volume)}
                   </td>
                 </tr>
@@ -296,44 +300,14 @@ export function CryptoTable({ data }: CryptoTableProps) {
         </div>
 
         {/* Pagination Controls */}
-        <div className="flex items-center justify-between px-4 py-3 border-t border-gray-700">
-          <div className="text-sm text-gray-400">
-            Showing {startIndex + 1} to{" "}
-            {Math.min(endIndex, filteredAndSortedData.length)} of{" "}
-            {filteredAndSortedData.length} results
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => handlePageChange(i + 1)}
-                className={`px-3 py-1 rounded-lg ${
-                  currentPage === i + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+          filteredAndSortedDataLength={filteredAndSortedData.length}
+          startIndex={startIndex}
+          endIndex={endIndex}
+        />
       </div>
     </div>
   );

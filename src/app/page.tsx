@@ -78,18 +78,18 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-300 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-slate-600 rounded-xl shadow-xl overflow-hidden">
+    <main className="min-h-screen bg-gray-300 text-orange-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="bg-slate-700 rounded-xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="p-6 border-b border-gray-700">
+          <div className="p-3 border-b border-slate-800">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-orange-200">
                   Crypto Dashboard
                 </h1>
                 {lastUpdated && (
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p className="text-sm text-gray-300 mt-1">
                     Last updated: {lastUpdated.toLocaleTimeString()}
                   </p>
                 )}
