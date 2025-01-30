@@ -1,13 +1,5 @@
+import { PaginationControlsProps } from "@/types/crypto";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-interface PaginationControlsProps {
-  currentPage: number;
-  totalPages: number;
-  handlePageChange: (page: number) => void;
-  filteredAndSortedDataLength: number;
-  startIndex: number;
-  endIndex: number;
-}
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
   currentPage,

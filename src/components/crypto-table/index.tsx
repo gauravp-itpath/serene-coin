@@ -29,9 +29,9 @@ export function CryptoTable({ data }: CryptoTableProps) {
   const [marketCapFilter, setMarketCapFilter] = useState<
     "all" | "high" | "medium" | "low"
   >("all");
-  // Add pagination state
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
 
   const columns: Column[] = [
     { label: "Price", field: "price", sortable: true },
@@ -132,7 +132,7 @@ export function CryptoTable({ data }: CryptoTableProps) {
               placeholder="Search by name or symbol..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-400 rounded-lg px-4 py-2 pl-10 text-gray-800 
+              className="w-full bg-gray-400 rounded-lg px-4 py-2 pl-10 text-gray-800 font-semibold 
                        placeholder-gray-700 focus:ring-2 focus:ring-zinc-600 outline-none"
             />
             <Search

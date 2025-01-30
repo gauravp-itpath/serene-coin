@@ -23,10 +23,22 @@ export interface CryptoTableProps {
     data: CryptoData[];
 }
 
-
-
 export interface Column {
     label: string;
     field: SortField;
     sortable: boolean;
+}
+
+export interface ErrorDisplayProps {
+    message: string;
+    onRetry: () => void;
+}
+
+export interface PaginationControlsProps {
+    currentPage: number;
+    totalPages: number;
+    handlePageChange: (page: number) => void;
+    filteredAndSortedDataLength: number;
+    startIndex: number;
+    endIndex: number;
 }

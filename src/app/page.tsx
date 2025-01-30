@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { RefreshCcw } from "lucide-react";
 import { CryptoTable } from "@/components/crypto-table";
 import { LoadingSpinner } from "@/components/loading";
@@ -11,12 +11,11 @@ import { CryptoData } from "@/types/crypto";
 const fetchDataWithRetry = async (attempt = 1): Promise<CryptoData[]> => {
   try {
     const response = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&sparkline=false"
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=500&sparkline=false"
     );
 
     if (!response.ok) {
       if (response.status === 429 && attempt <= 3) {
-        // Retry logic with exponential backoff
         const delay = 1000 * Math.pow(2, attempt); // 1s, 2s, 4s
         await new Promise((resolve) => setTimeout(resolve, delay));
         return fetchDataWithRetry(attempt + 1);
@@ -37,18 +36,18 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = async () => {
+  // Memoized fetchData function
+  const fetchData = useCallback(async () => {
     setError(null);
     try {
-      // Check if data is in localStorage and it's still valid (within 5 minutes)
       const cachedData = localStorage.getItem("cryptoData");
       const cachedTime = localStorage.getItem("cryptoDataTime");
-
       const currentTime = new Date().getTime();
+
       if (
         cachedData &&
         cachedTime &&
-        currentTime - parseInt(cachedTime) < 300000 // 5 minutes
+        currentTime - parseInt(cachedTime) < 30000 //30s
       ) {
         setData(JSON.parse(cachedData));
         setLastUpdated(new Date(parseInt(cachedTime)));
@@ -56,7 +55,6 @@ export default function Home() {
         return;
       }
 
-      // Fetch fresh data
       const freshData = await fetchDataWithRetry();
       setData(freshData);
       setLastUpdated(new Date());
@@ -69,13 +67,14 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
+  // useEffect for fetching data on mount and setting up the interval
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 300000); // 5 minutes interval
+    const interval = setInterval(fetchData, 30000); // 30s
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
 
   return (
     <main className="min-h-screen bg-gray-300 text-orange-200">

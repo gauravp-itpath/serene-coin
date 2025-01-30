@@ -1,39 +1,32 @@
-import { AlertCircle } from "lucide-react"; // Import the AlertCircle icon from Lucide
-
-interface ErrorDisplayProps {
-  message: string;
-  onRetry: () => void;
-}
+import { ErrorDisplayProps } from "@/types/crypto";
+import { useRouter } from "next/navigation";
 
 export function ErrorDisplay({ message, onRetry }: ErrorDisplayProps) {
+  const router = useRouter(); // Next.js router instance
+
+  const handleGoBack = () => {
+    // Navigate to the home page or "/" path
+    router.push("/dashboard");
+  };
+
   return (
-    <div
-      className="flex flex-col items-center justify-center p-8 space-y-6 m-4 bg-slate-700  rounded-lg
- max-w-md mx-auto"
-    >
+    <div className="flex flex-col items-center justify-center p-8 space-y-6 m-4 bg-slate-700 rounded-lg max-w-md mx-auto">
       <div className="flex flex-col items-center space-y-4">
-        {/* Image or Illustration */}
         <img
-          src="https://cloud.appwrite.io/v1/storage/buckets/6761570900080584d19c/files/6799dcc20009316752bd/view?project=6761470a00342024df5c" // Make sure to add an image file in the public folder for an illustration
+          src="https://cloud.appwrite.io/v1/storage/buckets/6761570900080584d19c/files/6799dcc20009316752bd/view?project=6761470a00342024df5c"
           alt="Error Illustration"
-          className="w-60 h-40 object-cover animate-pulse" // Tailwind's built-in 'pulse' animation"
-          // className="w-32 h-32 object-cover animate-ping" // Tailwind's built-in 'ping' animation
+          className="w-60 h-40 object-cover animate-pulse"
           style={{ animationDuration: "3s" }}
         />
-        {/* Error Message */}
-        <p className="text-xl text-red-600 font-semibold text-center">
-          {message}
+        <p className="text-3xl text-orange-300 font-thin text-center leading-snug">
+          {message?.trim() ? message : "Not Found"}
         </p>
-        {/* Lucide Alert Icon */}
-
         <button
           className="bg-white text-center w-48 rounded-2xl h-14 relative text-black text-xl font-semibold group"
           type="button"
+          onClick={handleGoBack} // Navigate to "/"
         >
-          <div
-            className="bg-green-400 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10
-           duration-500"
-          >
+          <div className="bg-green-400 rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1024 1024"
@@ -54,7 +47,6 @@ export function ErrorDisplay({ message, onRetry }: ErrorDisplayProps) {
         </button>
       </div>
 
-      {/* Add a lighthearted message to make the user feel more at ease */}
       <p className="text-sm text-gray-600 mt-4">
         Oops! Something went wrong. Please try again.
       </p>
